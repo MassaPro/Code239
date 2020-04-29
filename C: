@@ -1,0 +1,27 @@
+#include <vector>
+#include <iostream>
+
+using namespace std;
+
+int32_t main() {
+	int n, m;
+	cin >> n >> m;
+	string s, t;
+	cin >> s >> t;
+	vector<int> S(256), T(256);
+	for (int i = 0; i < s.size(); i++) {
+		S[s[i]]++;
+	}
+	int r = 0, ans = 0;
+	for (int i = 0; i + s.size() <= t.size(); i++) {
+		while (r < i + s.size()) {
+			T[t[r]]++;
+			r++;
+		}
+
+		ans += (S == T);
+		T[t[i]]--;
+	}
+	cout << ans;
+	return 0;
+}
