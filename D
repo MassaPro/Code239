@@ -1,0 +1,66 @@
+#include <vector>
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+#define int long long
+
+vector<int> used, cnt, p, mx, up;
+vector<vector<int>> g;
+
+void down(int v0) {
+	used[v0] = 1;
+	cnt[v0] += p[v0];
+	for (int to : g[v0]) {
+		if (!used[to]) {
+			down(to);
+			cnt[v0] += cnt[to];
+		}
+	}
+}
+
+void get(int v0, int p) {
+	used[v0] = 1;
+	int cur = 0;
+	up[v0] = up[p] + cnt[p] - cnt[v0];
+	for (int to : g[v0]) {
+		if (!used[to]) {
+			get(to, v0);
+			cur = max(cur, cnt[to]);
+		}
+	}
+	mx[v0] = max(cur, up[v0]);
+}
+
+int32_t main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+
+	int n;
+	cin >> n;
+	p.resize(n);
+	g.resize(n);
+	used.resize(n);
+	cnt.resize(n);
+	mx.resize(n);
+	up.resize(n);
+
+	for (int i = 0; i < n; i++) {
+		cin >> p[i];
+	}
+	for (int i = 0; i < n - 1; i++) {
+		int x, y;
+		cin >> x >> y;
+		g[x].push_back(y);
+		g[y].push_back(x);
+	}
+
+	down(0);
+	used.clear();
+	used.resize(n);
+	get(0, 0);
+	cout << (min_element(mx.begin(), mx.end()) - mx.begin());
+	return 0;
+}
