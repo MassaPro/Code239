@@ -1,0 +1,65 @@
+#include <vector>
+#include <iostream>
+#include <queue>
+#include <map>
+
+using namespace std;
+
+int32_t main() {
+	int n;
+	cin >> n;
+	string s;
+	cin >> s;
+
+	map<string, int> d, used;
+	map<string, string> p;
+	d[s] = 0;
+	queue<string> q;
+	q.push(s);
+
+	while (!q.empty()) {
+		string v = q.front();
+		q.pop();
+		int pos = 0, f = 1;
+		for (int i = 0; i < v.size(); i++) {
+			for (int j = i + 1; j < v.size(); j++) {
+				if (v[i] == 'B' && v[j] == 'A') {
+					f = 0;
+				}
+			}
+		}
+		if (f) {
+			vector<string> ans;
+			string pr = v;
+			for (;; pr = p[pr]) {
+				ans.push_back(pr);
+				if (pr == s) {
+					break;
+				}
+			}
+			cout << d[v] << '\n';
+			for (int i = 0; i < ans.size(); i++) {
+				cout << ans[ans.size() - 1 - i] << '\n';
+			}
+			return 0;
+		}
+		for (int i = 0; i + 1 < v.size(); i++) {
+			if (v[i] == '.' && v[i + 1] == '.') pos = i;
+		}
+		for (int i = 0; i + 1 < v.size(); i++) {
+			if (v[i] != '.' && v[i + 1] != '.') {
+				string to = v;
+				swap(to[i], to[pos]);
+				swap(to[i + 1], to[pos + 1]);
+				if (!used.count(to)) {
+					used[to] = 1;
+					q.push(to);
+					d[to] = d[v] + 1;
+					p[to] = v;
+				}
+			}
+		}
+
+	}
+	return 0;
+}
